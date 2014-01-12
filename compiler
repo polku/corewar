@@ -1,0 +1,58 @@
+- le compilateur transforme en fichier .s en .cor, qui sera lu par la machine virtuelle
+- pas necessaire de comprendre chacune des ops pour l'ecrire
+- pour comprendre les exemples du sujet : deja comprendre l'hexadecimal
+	- hexadecimal = systeme base 16, l'interet est que 1 caractere hexa (de 0-9 puis A B C D E F) == 4 octets
+	0000 == 0
+	0001 == 1
+	0010 == 2
+	0011 == 3
+	0100 == 4
+	0101 == 5
+	0110 == 6
+	0111 == 7
+	1000 == 8 
+	1001 == 9
+	1010 == A (10)
+	1011 == B (11)
+	1100 == C (12)
+	1101 == D (13)
+	1110 == E (14)
+	1111 == F (15)
+
+- exemple du sujet:
+l2: 	sti r1,%:live,%1 devient  0x0b,0x68,0x01,0x00,0x0f,0x00,0x01
+l2: est un label, ca servira d'adresse pour sauter a l'instruction qui le suit, donc ici le sti
+sti a l'opcode 11 soit 0b
+sti a comme parametre 1 registre/ 1 reg ou 1 indirect ou 1 direct / 1 direct ou 1 registre donc il faut un octet de codage pour savoir a quel type de param on a affaire :
+	- les registres ont le code 0b01, direct 0b10, ind 0b11, ici on a un reg, un direct (label == direct), et un direct donc on a 0110 1000 (2 derniers tjrs a zero pour "remplir") soit 0x68
+	- la valeur reg est codee sur 1 octet, la valeur indirect sur 2, la valeur direct c'est 2 ou 4 selon les instructions, pour sti c'est 2 donc 
+		- r1 -> 1 sur 1 octet soit 0x01
+		- %:live sur 2 octets == 0x000f pourquoi 15, parce que la premiere instruction qui suit le label live: est situe 15 octets plus loin, on commence a compter a l'octet suivant l'octet de l'instruction
+		- %1 sur 2 octets soit 0x0001
+
+and r1,%0,r1 devient 0x06,0x64,0x01,0x00,0x00,0x00,0x00,0x01
+	- and = 06
+	- octet codage = 0110 0100 = 64
+	- arg1 = 01
+	- arg2 = 0000 0001 (add code les directs sur 4 octets)
+	- arg3 = 01
+
+live: 	cf l2
+
+live %1 devient 0x01,0x00,0x00,0x00,0x01
+	- live = 01
+	- pas d'octet de codage pour live
+	- arg1 sur 4 octets = 0000 0001
+
+zjmp %:live
+	- zjmp = 09
+	- arg1 = direct sur 2o = fffb (65531). live: est a moins 5 octets, mais on ne peut pas coder de nombre negatif, donc pour aller avant il faut "faire un tour" complet (65536) - valeur qu'on veut
+		65535 = ffff = 1111 1111, 1111 1111 + 1 = 1 0000 0000 mais comme on a que 2 octets le 1 disparait et on se retrouve a 0.
+
+- en testant le compilateur exemple on voit qu'un fichier .cor fait au moins +2 ko, dans l'ordre, il y a:
+	- le header cad
+		- le magic : 00ea83f3 4o (unsigned int)
+		- le nom : en ASCII suivi de 00 jusqu'a PROG_NAME_LENGTHo (128o)
+		- la taille du pgm : 4o (unsigned int)
+		- le commentaire : en ASCII suivi de 0 jusqu'a COMMENT_LENGTH (2048o)
+	- et ensuite le code
