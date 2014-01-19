@@ -11,3 +11,5 @@ corewar
   lexer2.c : idem lexer mais revu a la norme 42 (sauf les printf et le nb de fonctions)
   
   parser.c : exemple de parser tire de wikipedia, avec la BNF correspondante
+
+http://shackspace.de/wiki/doku.php?id=project:algorithmicsoundscapes
