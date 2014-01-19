@@ -1,0 +1,13 @@
+line ::= cde [end_cde ope cde]* '\0'
+
+cde ::=  chaine [chaine]* [end_cde]?
+
+chaine ::= ['A'|...|'z'|'-']+
+
+fich ::= ['<' chaine] | [chaine '>']  | [chaine '>>'] 
+
+end_cde ::= ';'
+
+ope ::= '<'|'<<'|'>'|'>>'|'|' // separer les operateurs ?
+
+http://en.wikipedia.org/wiki/Predictive_parser
