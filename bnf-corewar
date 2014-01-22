@@ -1,0 +1,104 @@
+program = header code
+
+header =
+	name
+	comment
+
+name =
+	".name" """{letter}"""
+
+comment =
+	".comment" """{letter}"""
+
+code =
+	{label lab_chr | comment | instruction}
+
+comment =
+	cmt_char {letter}
+
+instruction =
+	[op_live | op_ld ... | op_aff]
+
+op_live =
+	"live" dir
+
+op_ld =
+	"ld" [dir|ind] sep reg
+
+op_st =
+	"st" reg sep [ind|reg]
+
+op_add =
+	"add" reg sep reg sep reg
+
+op_sub =
+	"sub" reg sep reg sep reg
+
+op_and =
+	"and" [reg|dir|ind] sep [reg|dir|ind] sep reg
+
+op_or =
+	"or" [reg|dir|ind] sep [reg|dir|ind] sep reg
+
+op_xor =
+	"xor" [reg|dir|ind] sep [reg|dir|ind] sep reg
+
+op_zjmp =
+	"zjmp" dir
+
+op_ldi =
+	"ldi"  [reg|dir|ind] sep [reg|dir|ind]
+
+op_sti =
+	"sti"  reg sep [reg|dir|ind] sep [reg|dir]
+
+op_fork =
+	"fork" dir
+
+op_lld =
+	"lld" [dir|ind] sep reg
+
+op_lldi =
+	"lldi" [reg|dir|ind] sep [reg|dir] sep reg
+
+op_lfork =
+	"lfork" dir
+
+op_aff =
+	"aff" reg
+
+reg =
+	"r"["1"|..|"16"]
+
+dir =
+	dir_chr [lab_chr label | nb]
+
+ind =
+	[lab_chr label | nb]
+
+label =
+	{letter}
+
+sep_chr =
+	","
+
+dir_chr =
+	"%"
+
+lab_chr =
+	":"
+
+cmt_chr =
+	"#"
+
+newline =
+	"\n"
+
+letter =
+	"A" | "B" | ... | "a" | "b" | ... | "z" | "_" | " " | "0" ... | "9"
+
+lab_name =
+	"A" | "B" | ... | "a" | "b" | ... | "z" | "_" | "0" ... | "9"
+
+nb =
+	{1-9}
